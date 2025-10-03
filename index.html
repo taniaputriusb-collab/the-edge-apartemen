@@ -1,169 +1,178 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Edge Apartemen Kamarku</title>
   <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:20px; background:#f9f9f9; }
-    h1, h2, h3 { text-align:center; }
-    .menu, .units, .gallery { display:none; margin-top:30px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background: #2c3e50;
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+    }
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
     .grid {
-      display:flex; flex-wrap:wrap; gap:15px; justify-content:center;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
     }
     .card {
-      background:white; padding:20px; border-radius:8px;
-      box-shadow:0 2px 5px rgba(0,0,0,0.2); cursor:pointer;
-      transition:0.2s;
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform .2s;
     }
-    .card:hover { transform:scale(1.05); background:#f0f0f0; }
-    .back { margin:20px auto; display:block; text-align:center; cursor:pointer; color:blue; }
+    .card:hover {
+      transform: scale(1.05);
+      background: #ecf0f1;
+    }
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
     .gallery img {
-      width:300px; height:auto; border-radius:8px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.3);
+      width: calc(50% - 10px);
+      border-radius: 8px;
+    }
+    .back-btn, .copy-btn {
+      display: inline-block;
+      margin: 10px 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background: #3498db;
+      color: #fff;
+      cursor: pointer;
+    }
+    .back-btn:hover, .copy-btn:hover {
+      background: #2980b9;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>The Edge Apartemen Kamarku</h1>
+  </header>
 
-  <h1>The Edge Apartemen Kamarku</h1>
-
-  <!-- Halaman 1: Pilih Tipe -->
-  <div id="menu" class="menu" style="display:block;">
-    <h2>Pilih Tipe Kamar</h2>
-    <div class="grid">
-      <div class="card" onclick="showUnits('22')">Type 22 Studio</div>
-      <div class="card" onclick="showUnits('25')">Type 25</div>
-      <div class="card" onclick="showUnits('36st')">Type 36 Studio</div>
-      <div class="card" onclick="showUnits('36-1br')">Type 36 1 Bedroom</div>
-      <div class="card" onclick="showUnits('36-2br')">Type 36 2 Bedroom</div>
-      <div class="card" onclick="showUnits('47-2br')">Type 47 2 Bedroom</div>
-      <div class="card" onclick="showUnits('72-3br')">Type 72 3 Bedroom</div>
-    </div>
-  </div>
-
-  <!-- Halaman 2: Nomor Unit -->
-  <div id="units" class="units">
-    <h2 id="unitTitle"></h2>
-    <div class="grid" id="unitList"></div>
-    <span class="back" onclick="backToMenu()">⬅ Kembali</span>
-  </div>
-
-  <!-- Halaman 3: Galeri Foto -->
-  <div id="gallery" class="gallery">
-    <h3 id="galleryTitle"></h3>
-    <div class="grid" id="galleryPhotos"></div>
-    <span class="back" onclick="backToUnits()">⬅ Kembali ke daftar unit</span>
-  </div>
+  <div class="container" id="app"></div>
 
   <script>
-    // Data struktur tipe → unit → foto
+    // =======================
+    // DATA UNIT + FOTO
+    // =======================
     const data = {
-      "22": {
-        title: "Type 22 Studio",
-        units: {
-          "1728": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
-          "1723": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
-          "1528": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
-          "1523": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
-          "723": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
-          "623": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
-          "528": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"]
-        }
+      "Type 22 Studio": {
+        "1728": ["https://via.placeholder.com/400x250?text=1728+Foto+1", "https://via.placeholder.com/400x250?text=1728+Foto+2"],
+        "1723": ["https://via.placeholder.com/400x250?text=1723+Foto+1"],
+        "1528": ["https://via.placeholder.com/400x250?text=1528+Foto+1"]
       },
-      "25": {
-        title: "Type 25",
-        units: {
-          "1520": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"]
-        }
+      "Type 25": {
+        "1520": ["https://via.placeholder.com/400x250?text=1520+Foto+1"]
       },
-      "36st": {
-        title: "Type 36 Studio",
-        units: {
-          "1929": ["https://via.placeholder.com/600x400"],
-          "1910": ["https://via.placeholder.com/600x400"],
-          "1903": ["https://via.placeholder.com/600x400"],
-          "1735": ["https://via.placeholder.com/600x400"],
-          "935": ["https://via.placeholder.com/600x400"]
-        }
+      "Type 36 Studio": {
+        "1929": ["https://via.placeholder.com/400x250?text=1929+Foto+1", "https://via.placeholder.com/400x250?text=1929+Foto+2"],
+        "1910": ["https://via.placeholder.com/400x250?text=1910+Foto+1"]
       },
-      "36-1br": {
-        title: "Type 36 1 Bedroom",
-        units: {
-          "1939": ["https://via.placeholder.com/600x400"],
-          "1856": ["https://via.placeholder.com/600x400"],
-          "1832": ["https://via.placeholder.com/600x400"],
-          "1811": ["https://via.placeholder.com/600x400"],
-          "1809": ["https://via.placeholder.com/600x400"],
-          "1256": ["https://via.placeholder.com/600x400"],
-          "1110": ["https://via.placeholder.com/600x400"],
-          "1108": ["https://via.placeholder.com/600x400"],
-          "952": ["https://via.placeholder.com/600x400"],
-          "851": ["https://via.placeholder.com/600x400"],
-          "817": ["https://via.placeholder.com/600x400"],
-          "533": ["https://via.placeholder.com/600x400"]
-        }
+      "Type 36 1 Bedroom": {
+        "1939": ["https://via.placeholder.com/400x250?text=1939+Foto+1"]
       },
-      "36-2br": {
-        title: "Type 36 2 Bedroom",
-        units: {
-          "1908": ["https://via.placeholder.com/600x400"],
-          "1733": ["https://via.placeholder.com/600x400"],
-          "1606": ["https://via.placeholder.com/600x400"],
-          "1508": ["https://via.placeholder.com/600x400"],
-          "1250": ["https://via.placeholder.com/600x400"],
-          "1219": ["https://via.placeholder.com/600x400"],
-          "905": ["https://via.placeholder.com/600x400"],
-          "339": ["https://via.placeholder.com/600x400"]
-        }
-      },
-      "47-2br": {
-        title: "Type 47 2 Bedroom",
-        units: {
-          "1222": ["https://via.placeholder.com/600x400"]
-        }
-      },
-      "72-3br": {
-        title: "Type 72 3 Bedroom",
-        units: {
-          "2028": ["https://via.placeholder.com/600x400"]
-        }
+      "Type 36 2 Bedroom": {
+        "1908": ["https://via.placeholder.com/400x250?text=1908+Foto+1"]
       }
     };
 
-    // Navigasi antar halaman
-    function showUnits(type) {
-      document.getElementById("menu").style.display="none";
-      document.getElementById("gallery").style.display="none";
-      document.getElementById("units").style.display="block";
-      document.getElementById("unitTitle").innerText = data[type].title;
-      let html = "";
-      for (let unit in data[type].units) {
-        html += `<div class="card" onclick="showGallery('${type}','${unit}')">Unit ${unit}</div>`;
-      }
-      document.getElementById("unitList").innerHTML = html;
-    }
+    const app = document.getElementById("app");
 
-    function backToMenu(){
-      document.getElementById("units").style.display="none";
-      document.getElementById("menu").style.display="block";
-    }
-
-    function showGallery(type,unit){
-      document.getElementById("units").style.display="none";
-      document.getElementById("gallery").style.display="block";
-      document.getElementById("galleryTitle").innerText = data[type].title + " - Unit " + unit;
-      let html="";
-      data[type].units[unit].forEach(foto=>{
-        html += `<img src="${foto}" alt="Foto Unit ${unit}"/>`;
+    // =======================
+    // NAVIGASI
+    // =======================
+    function showTypes() {
+      app.innerHTML = "<h2>Pilih Type Kamar</h2>";
+      const grid = document.createElement("div");
+      grid.className = "grid";
+      Object.keys(data).forEach(type => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.textContent = type;
+        card.onclick = () => showUnits(type);
+        grid.appendChild(card);
       });
-      document.getElementById("galleryPhotos").innerHTML = html;
+      app.appendChild(grid);
     }
 
-    function backToUnits(){
-      document.getElementById("gallery").style.display="none";
-      document.getElementById("units").style.display="block";
+    function showUnits(type) {
+      app.innerHTML = `<button class="back-btn" onclick="showTypes()">⬅ Kembali</button>
+                       <h2>${type}</h2>`;
+      const grid = document.createElement("div");
+      grid.className = "grid";
+      Object.keys(data[type]).forEach(unit => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.textContent = `Unit ${unit}`;
+        card.onclick = () => showGallery(type, unit);
+        grid.appendChild(card);
+      });
+      app.appendChild(grid);
     }
+
+    function showGallery(type, unit) {
+      const photos = data[type][unit];
+      app.innerHTML = `
+        <button class="back-btn" onclick="showUnits('${type}')">⬅ Kembali</button>
+        <h2>${type} - Unit ${unit}</h2>
+        <button class="copy-btn" onclick="copyLink('${type}','${unit}')">📋 Copy Link</button>
+      `;
+      const gallery = document.createElement("div");
+      gallery.className = "gallery";
+      photos.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        gallery.appendChild(img);
+      });
+      app.appendChild(gallery);
+    }
+
+    // =======================
+    // COPY LINK
+    // =======================
+    function copyLink(type, unit) {
+      const url = `${window.location.origin}${window.location.pathname}?type=${encodeURIComponent(type)}&unit=${unit}`;
+      navigator.clipboard.writeText(url).then(() => {
+        alert("Link unit berhasil dicopy! Tinggal paste di WhatsApp ✅");
+      });
+    }
+
+    // =======================
+    // AUTO LOAD LINK (SHARE)
+    // =======================
+    function checkParams() {
+      const params = new URLSearchParams(window.location.search);
+      const type = params.get("type");
+      const unit = params.get("unit");
+      if (type && unit && data[type] && data[type][unit]) {
+        showGallery(type, unit);
+      } else {
+        showTypes();
+      }
+    }
+
+    checkParams();
   </script>
 </body>
 </html>
