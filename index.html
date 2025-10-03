@@ -1,169 +1,114 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>The Edge Apartemen Kamarku</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; background:#f9f9f9; margin:0; padding:20px; }
-    h1 { color:#333; }
-    h2 { color:#444; margin-top:20px; }
-    .hidden { display: none; }
-    .btn {
-      padding: 10px 20px; margin: 5px;
-      background: #007bff; color: white;
-      border: none; border-radius: 5px;
-      cursor: pointer; font-size:16px;
-    }
-    .btn:hover { background: #0056b3; }
-    .gallery img {
-      max-width: 200px; margin: 8px;
-      border-radius: 8px; box-shadow:0 2px 6px rgba(0,0,0,0.2);
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; background:#f4f4f9; }
+    h1,h2 { text-align: center; }
+    .container { max-width: 900px; margin: auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 15px; margin-top: 20px; }
+    button { padding: 10px; border: none; background: #007bff; color: white; border-radius: 6px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+    .gallery img { max-width: 160px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    #backBtn { margin-top: 20px; display: block; }
   </style>
 </head>
 <body>
+<div class="container">
   <h1>The Edge Apartemen Kamarku</h1>
+  <div id="app"></div>
+</div>
 
-  <!-- Step 1 -->
-  <div id="page1">
-    <h2>Pilih Tipe Unit</h2>
-    <button class="btn" onclick="showUnits('22 Studio')">Type 22 Studio</button>
-    <button class="btn" onclick="showUnits('25')">Type 25</button>
-    <button class="btn" onclick="showUnits('36 Studio')">Type 36 Studio</button>
-    <button class="btn" onclick="showUnits('36 1BR')">Type 36 1 Bedroom</button>
-    <button class="btn" onclick="showUnits('36 2BR')">Type 36 2 Bedroom</button>
-  </div>
+<script>
+  // === Konfigurasi ===
+  const baseImageUrl = "https://raw.githubusercontent.com/taniaputriusb-collab/theedge-gallery/main/";
 
-  <!-- Step 2 -->
-  <div id="page2" class="hidden">
-    <h2 id="unitType"></h2>
-    <div id="unitList"></div>
-    <br>
-    <button class="btn" onclick="backToPage1()">← Kembali</button>
-  </div>
+  const units = {
+    "Type 22 Studio": ["1728","1723","1528","1523","723","623","528"],
+    "Type 25": ["1520"],
+    "Type 36 Studio": ["1929","1910","1903","1735","935"],
+    "Type 36 1 Bedroom": ["1939","1856","1832","1811","1809","1256","1110","1108","952","851","817","533"],
+    "Type 36 2 Bedroom": ["1908","1733","1606","1508","1250","1219","905","339","472","272","2028"]
+  };
 
-  <!-- Step 3 -->
-  <div id="page3" class="hidden">
-    <h2 id="unitTitle"></h2>
-    <div id="gallery" class="gallery"></div>
-    <br>
-    <button class="btn" onclick="downloadAll()">⬇ Download Semua Foto</button>
-    <br><br>
-    <button class="btn" onclick="backToPage2()">← Kembali</button>
-  </div>
+  const app = document.getElementById("app");
 
-  <!-- JSZIP for download -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  // Halaman pilih tipe
+  function showTypes() {
+    app.innerHTML = "<h2>Pilih Type Unit</h2>";
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    Object.keys(units).forEach(type => {
+      const btn = document.createElement("button");
+      btn.textContent = type;
+      btn.onclick = () => showUnits(type);
+      grid.appendChild(btn);
+    });
+    app.appendChild(grid);
+  }
 
-  <script>
-    // ==================== DATA UNIT (EDIT INI SAJA) ====================
-    const data = {
-      "22 Studio": {
-        "1728": ["1728-1.jpg","1728-2.jpg"],
-        "1723": ["1723-1.jpg","1723-2.jpg"],
-        "1528": ["1528-1.jpg","1528-2.jpg"],
-        "1523": ["1523-1.jpg","1523-2.jpg"],
-        "723":  ["723-1.jpg","723-2.jpg","723-3.jpg","723-4.jpg"],
-        "623":  ["623-1.jpg","623-2.jpg","623-3.jpg","623-4.jpg"],
-        "528":  ["528-1.jpg","528-2.jpg","528-3.jpg","528-4.jpg","528-5.jpg"]
-      },
-      "25": {
-        "1520": ["1520-1.jpg","1520-2.jpg"]
-      },
-      "36 Studio": {
-        "1929": ["1929-1.jpg"],
-        "1910": ["1910-1.jpg"],
-        "1903": ["1903-1.jpg"],
-        "1735": ["1735-1.jpg"],
-        "935":  ["935-1.jpg"]
-      },
-      "36 1BR": {
-        "1939": ["1939-1.jpg"],
-        "1856": ["1856-1.jpg"],
-        "1832": ["1832-1.jpg"],
-        "1811": ["1811-1.jpg"],
-        "1809": ["1809-1.jpg"],
-        "1256": ["1256-1.jpg"],
-        "1110": ["1110-1.jpg"],
-        "1108": ["1108-1.jpg"],
-        "952":  ["952-1.jpg"],
-        "851":  ["851-1.jpg"],
-        "817":  ["817-1.jpg"],
-        "533":  ["533-1.jpg"]
-      },
-      "36 2BR": {
-        "1908": ["1908-1.jpg"],
-        "1733": ["1733-1.jpg"],
-        "1606": ["1606-1.jpg"],
-        "1508": ["1508-1.jpg"],
-        "1250": ["1250-1.jpg"],
-        "1219": ["1219-1.jpg"],
-        "905":  ["905-1.jpg"],
-        "339":  ["339-1.jpg"],
-        "47":   ["47-1.jpg"],
-        "2br122272": ["2br122272-1.jpg"],
-        "3BR2028": ["3BR2028-1.jpg"]
-      }
+  // Halaman pilih unit
+  function showUnits(type) {
+    app.innerHTML = `<h2>${type}</h2>`;
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    units[type].forEach(no => {
+      const btn = document.createElement("button");
+      btn.textContent = `Unit ${no}`;
+      btn.onclick = () => showGallery(no);
+      grid.appendChild(btn);
+    });
+    app.appendChild(grid);
+
+    const back = document.createElement("button");
+    back.id = "backBtn"; back.textContent = "← Kembali";
+    back.onclick = showTypes;
+    app.appendChild(back);
+  }
+
+  // Halaman galeri foto unit
+  function showGallery(unitNo) {
+    app.innerHTML = `<h2>Galeri Unit ${unitNo}</h2>`;
+    const gal = document.createElement("div");
+    gal.className = "gallery";
+
+    let photos = [];
+    for (let i=1; i<=5; i++) {
+      const imgUrl = `${baseImageUrl}${unitNo}-${i}.jpg`;
+      const img = document.createElement("img");
+      img.src = imgUrl;
+      gal.appendChild(img);
+      photos.push(imgUrl);
+    }
+    app.appendChild(gal);
+
+    // Tombol download semua
+    const dlBtn = document.createElement("button");
+    dlBtn.textContent = "Download Semua Foto";
+    dlBtn.onclick = () => {
+      photos.forEach(url => {
+        const a = document.createElement("a");
+        a.href = url; a.download = url.split("/").pop();
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
     };
-    // ==================================================================
+    app.appendChild(dlBtn);
 
-    let currentType = "";
-    let currentUnit = "";
+    const back = document.createElement("button");
+    back.id = "backBtn"; back.textContent = "← Kembali";
+    back.onclick = () => {
+      const type = Object.keys(units).find(t => units[t].includes(unitNo));
+      showUnits(type);
+    };
+    app.appendChild(back);
+  }
 
-    function showUnits(type) {
-      currentType = type;
-      document.getElementById("page1").classList.add("hidden");
-      document.getElementById("page2").classList.remove("hidden");
-      document.getElementById("unitType").innerText = "Unit " + type;
-      let list = document.getElementById("unitList");
-      list.innerHTML = "";
-      Object.keys(data[type]).forEach(u=>{
-        let btn = document.createElement("button");
-        btn.className = "btn";
-        btn.innerText = u;
-        btn.onclick = ()=>showGallery(u);
-        list.appendChild(btn);
-      });
-    }
-
-    function showGallery(unit) {
-      currentUnit = unit;
-      document.getElementById("page2").classList.add("hidden");
-      document.getElementById("page3").classList.remove("hidden");
-      document.getElementById("unitTitle").innerText = "Foto Unit " + unit;
-      let gal = document.getElementById("gallery");
-      gal.innerHTML = "";
-      data[currentType][unit].forEach(img=>{
-        let image = document.createElement("img");
-        image.src = "https://raw.githubusercontent.com/taniaputriusb-collab/theedge-gallery/main/" + img;
-        gal.appendChild(image);
-      });
-    }
-
-    function downloadAll() {
-      let zip = new JSZip();
-      let promises = [];
-      data[currentType][currentUnit].forEach(img=>{
-        let url = "https://raw.githubusercontent.com/taniaputriusb-collab/theedge-gallery/main/" + img;
-        promises.push(fetch(url).then(r=>r.blob()).then(b=>zip.file(img, b)));
-      });
-      Promise.all(promises).then(()=>{
-        zip.generateAsync({type:"blob"}).then(c=>{
-          saveAs(c, currentUnit+".zip");
-        });
-      });
-    }
-
-    function backToPage1() {
-      document.getElementById("page2").classList.add("hidden");
-      document.getElementById("page1").classList.remove("hidden");
-    }
-
-    function backToPage2() {
-      document.getElementById("page3").classList.add("hidden");
-      document.getElementById("page2").classList.remove("hidden");
-    }
-  </script>
+  // Load awal
+  showTypes();
+</script>
 </body>
 </html>
