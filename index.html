@@ -11,7 +11,7 @@
     button { padding: 10px; border: none; background: #007bff; color: white; border-radius: 6px; cursor: pointer; }
     button:hover { background: #0056b3; }
     .gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
-    .gallery img { max-width: 160px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    .gallery img { max-width: 160px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; }
     #backBtn { margin-top: 20px; display: block; }
   </style>
 </head>
@@ -68,8 +68,18 @@
     app.appendChild(back);
   }
 
+  // Cek apakah gambar ada
+  async function imageExists(url) {
+    try {
+      const res = await fetch(url, { method: "HEAD" });
+      return res.ok;
+    } catch (e) {
+      return false;
+    }
+  }
+
   // Halaman galeri foto unit
-  function showGallery(unitNo) {
+  async function showGallery(unitNo) {
     app.innerHTML = `<h2>Galeri Unit ${unitNo}</h2>`;
     const gal = document.createElement("div");
     gal.className = "gallery";
@@ -77,26 +87,36 @@
     let photos = [];
     for (let i=1; i<=5; i++) {
       const imgUrl = `${baseImageUrl}${unitNo}-${i}.jpg`;
-      const img = document.createElement("img");
-      img.src = imgUrl;
-      gal.appendChild(img);
-      photos.push(imgUrl);
+      if (await imageExists(imgUrl)) {
+        const link = document.createElement("a");
+        link.href = imgUrl; link.target = "_blank"; // klik buka gambar besar
+        const img = document.createElement("img");
+        img.src = imgUrl;
+        link.appendChild(img);
+        gal.appendChild(link);
+        photos.push(imgUrl);
+      }
+    }
+    if (photos.length === 0) {
+      gal.innerHTML = "<p>Tidak ada foto untuk unit ini.</p>";
     }
     app.appendChild(gal);
 
     // Tombol download semua
-    const dlBtn = document.createElement("button");
-    dlBtn.textContent = "Download Semua Foto";
-    dlBtn.onclick = () => {
-      photos.forEach(url => {
-        const a = document.createElement("a");
-        a.href = url; a.download = url.split("/").pop();
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      });
-    };
-    app.appendChild(dlBtn);
+    if (photos.length > 0) {
+      const dlBtn = document.createElement("button");
+      dlBtn.textContent = "Download Semua Foto";
+      dlBtn.onclick = () => {
+        photos.forEach(url => {
+          const a = document.createElement("a");
+          a.href = url; a.download = url.split("/").pop();
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        });
+      };
+      app.appendChild(dlBtn);
+    }
 
     const back = document.createElement("button");
     back.id = "backBtn"; back.textContent = "← Kembali";
