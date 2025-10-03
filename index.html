@@ -1,179 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Edge Apartemen Kamarku</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
-      background: #f4f4f4;
-      color: #333;
-    }
-    header {
-      background: #2c3e50;
-      color: #fff;
-      text-align: center;
-      padding: 1rem;
-    }
-    .container {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 15px;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      transition: transform .2s;
-    }
-    .card:hover {
-      transform: scale(1.05);
-      background: #ecf0f1;
-    }
-    .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .gallery img {
-      width: calc(50% - 10px);
-      border-radius: 8px;
-    }
-    .back-btn, .copy-btn {
-      display: inline-block;
-      margin: 10px 5px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 6px;
-      background: #3498db;
-      color: #fff;
-      cursor: pointer;
-    }
-    .back-btn:hover, .copy-btn:hover {
-      background: #2980b9;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; }
+    .hidden { display: none; }
+    .btn { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .btn:hover { background: #0056b3; }
+    .gallery img { max-width: 200px; margin: 5px; border-radius: 10px; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>The Edge Apartemen Kamarku</h1>
-  </header>
+  <h1>The Edge Apartemen Kamarku</h1>
 
-  <div class="container" id="app"></div>
+  <!-- Step 1 -->
+  <div id="page1">
+    <h2>Pilih Tipe Unit</h2>
+    <button class="btn" onclick="showUnits('22 Studio')">Type 22 Studio</button>
+    <button class="btn" onclick="showUnits('25')">Type 25</button>
+    <button class="btn" onclick="showUnits('36 Studio')">Type 36 Studio</button>
+    <button class="btn" onclick="showUnits('36 1BR')">Type 36 1 Bedroom</button>
+    <button class="btn" onclick="showUnits('36 2BR')">Type 36 2 Bedroom</button>
+  </div>
+
+  <!-- Step 2 -->
+  <div id="page2" class="hidden">
+    <h2 id="unitType"></h2>
+    <div id="unitList"></div>
+    <button class="btn" onclick="backToPage1()">← Kembali</button>
+  </div>
+
+  <!-- Step 3 -->
+  <div id="page3" class="hidden">
+    <h2 id="unitTitle"></h2>
+    <div id="gallery" class="gallery"></div>
+    <button class="btn" onclick="downloadAll()">⬇ Download Semua Foto</button>
+    <br><br>
+    <button class="btn" onclick="backToPage2()">← Kembali</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
   <script>
-    // =======================
-    // DATA UNIT + FOTO
-    // =======================
+    // Data unit + link foto (EDIT DI SINI)
     const data = {
-      "Type 22 Studio": {
-        "1728": ["https://github.com/taniaputriusb-collab/theedge-gallery/blob/main/528-1.jpg", "https://github.com/taniaputriusb-collab/theedge-gallery/blob/main/528-2.jpg"],
-        "1723": ["https://via.placeholder.com/400x250?text=1723+Foto+1"],
-        "1528": ["https://via.placeholder.com/400x250?text=1528+Foto+1"]
+      "22 Studio": {
+        "1728": ["528-1.jpg","528-2.jpg"],
+        "1723": ["1723-1.jpg","1723-2.jpg"],
+        "1528": ["1528-1.jpg","1528-2.jpg"],
+        "1523": ["1523-1.jpg","1523-2.jpg"],
+        "723":  ["723-1.jpg","723-2.jpg"],
+        "623":  ["623-1.jpg","623-2.jpg"],
+        "528":  ["528-1.jpg","528-2.jpg"]
       },
-      "Type 25": {
-        "1520": ["https://via.placeholder.com/400x250?text=1520+Foto+1"]
+      "25": {
+        "1520": ["1520-1.jpg","1520-2.jpg"]
       },
-      "Type 36 Studio": {
-        "1929": ["https://via.placeholder.com/400x250?text=1929+Foto+1", "https://via.placeholder.com/400x250?text=1929+Foto+2"],
-        "1910": ["https://via.placeholder.com/400x250?text=1910+Foto+1"]
+      "36 Studio": {
+        "1929": ["1929-1.jpg"],
+        "1910": ["1910-1.jpg"],
+        "1903": ["1903-1.jpg"],
+        "1735": ["1735-1.jpg"],
+        "935":  ["935-1.jpg"]
       },
-      "Type 36 1 Bedroom": {
-        "1939": ["https://via.placeholder.com/400x250?text=1939+Foto+1"]
+      "36 1BR": {
+        "1939": ["1939-1.jpg"],
+        "1856": ["1856-1.jpg"],
+        "1832": ["1832-1.jpg"],
+        "1811": ["1811-1.jpg"],
+        "1809": ["1809-1.jpg"],
+        "1256": ["1256-1.jpg"],
+        "1110": ["1110-1.jpg"],
+        "1108": ["1108-1.jpg"],
+        "952":  ["952-1.jpg"],
+        "851":  ["851-1.jpg"],
+        "817":  ["817-1.jpg"],
+        "533":  ["533-1.jpg"]
       },
-      "Type 36 2 Bedroom": {
-        "1908": ["https://via.placeholder.com/400x250?text=1908+Foto+1"]
+      "36 2BR": {
+        "1908": ["1908-1.jpg"],
+        "1733": ["1733-1.jpg"],
+        "1606": ["1606-1.jpg"],
+        "1508": ["1508-1.jpg"],
+        "1250": ["1250-1.jpg"],
+        "1219": ["1219-1.jpg"],
+        "905":  ["905-1.jpg"],
+        "339":  ["339-1.jpg"],
+        "47":   ["47-1.jpg"],
+        "2br122272": ["2br122272-1.jpg"],
+        "3BR2028": ["3BR2028-1.jpg"]
       }
     };
 
-    const app = document.getElementById("app");
-
-    // =======================
-    // NAVIGASI
-    // =======================
-    function showTypes() {
-      app.innerHTML = "<h2>Pilih Type Kamar</h2>";
-      const grid = document.createElement("div");
-      grid.className = "grid";
-      Object.keys(data).forEach(type => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.textContent = type;
-        card.onclick = () => showUnits(type);
-        grid.appendChild(card);
-      });
-      app.appendChild(grid);
-    }
+    let currentType = "";
+    let currentUnit = "";
 
     function showUnits(type) {
-      app.innerHTML = `<button class="back-btn" onclick="showTypes()">⬅ Kembali</button>
-                       <h2>${type}</h2>`;
-      const grid = document.createElement("div");
-      grid.className = "grid";
-      Object.keys(data[type]).forEach(unit => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.textContent = `Unit ${unit}`;
-        card.onclick = () => showGallery(type, unit);
-        grid.appendChild(card);
-      });
-      app.appendChild(grid);
-    }
-
-    function showGallery(type, unit) {
-      const photos = data[type][unit];
-      app.innerHTML = `
-        <button class="back-btn" onclick="showUnits('${type}')">⬅ Kembali</button>
-        <h2>${type} - Unit ${unit}</h2>
-        <button class="copy-btn" onclick="copyLink('${type}','${unit}')">📋 Copy Link</button>
-      `;
-      const gallery = document.createElement("div");
-      gallery.className = "gallery";
-      photos.forEach(url => {
-        const img = document.createElement("img");
-        img.src = url;
-        gallery.appendChild(img);
-      });
-      app.appendChild(gallery);
-    }
-
-    // =======================
-    // COPY LINK
-    // =======================
-    function copyLink(type, unit) {
-      const url = `${window.location.origin}${window.location.pathname}?type=${encodeURIComponent(type)}&unit=${unit}`;
-      navigator.clipboard.writeText(url).then(() => {
-        alert("Link unit berhasil dicopy! Tinggal paste di WhatsApp ✅");
+      currentType = type;
+      document.getElementById("page1").classList.add("hidden");
+      document.getElementById("page2").classList.remove("hidden");
+      document.getElementById("unitType").innerText = "Unit " + type;
+      let list = document.getElementById("unitList");
+      list.innerHTML = "";
+      Object.keys(data[type]).forEach(u=>{
+        let btn = document.createElement("button");
+        btn.className = "btn";
+        btn.innerText = u;
+        btn.onclick = ()=>showGallery(u);
+        list.appendChild(btn);
       });
     }
 
-    // =======================
-    // AUTO LOAD LINK (SHARE)
-    // =======================
-    function checkParams() {
-      const params = new URLSearchParams(window.location.search);
-      const type = params.get("type");
-      const unit = params.get("unit");
-      if (type && unit && data[type] && data[type][unit]) {
-        showGallery(type, unit);
-      } else {
-        showTypes();
-      }
+    function showGallery(unit) {
+      currentUnit = unit;
+      document.getElementById("page2").classList.add("hidden");
+      document.getElementById("page3").classList.remove("hidden");
+      document.getElementById("unitTitle").innerText = "Foto Unit " + unit;
+      let gal = document.getElementById("gallery");
+      gal.innerHTML = "";
+      data[currentType][unit].forEach(img=>{
+        let image = document.createElement("img");
+        image.src = "https://raw.githubusercontent.com/taniaputriusb-collab/theedge-gallery/main/" + img;
+        gal.appendChild(image);
+      });
     }
 
-    checkParams();
+    function downloadAll() {
+      let zip = new JSZip();
+      let promises = [];
+      data[currentType][currentUnit].forEach(img=>{
+        let url = "https://raw.githubusercontent.com/taniaputriusb-collab/theedge-gallery/main/" + img;
+        promises.push(fetch(url).then(r=>r.blob()).then(b=>zip.file(img, b)));
+      });
+      Promise.all(promises).then(()=>{
+        zip.generateAsync({type:"blob"}).then(c=>{
+          saveAs(c, currentUnit+".zip");
+        });
+      });
+    }
+
+    function backToPage1() {
+      document.getElementById("page2").classList.add("hidden");
+      document.getElementById("page1").classList.remove("hidden");
+    }
+
+    function backToPage2() {
+      document.getElementById("page3").classList.add("hidden");
+      document.getElementById("page2").classList.remove("hidden");
+    }
   </script>
 </body>
 </html>
-
