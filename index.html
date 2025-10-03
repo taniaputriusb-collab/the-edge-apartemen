@@ -5,265 +5,164 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The Edge Apartemen Kamarku</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f9;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
+    body { font-family: Arial, sans-serif; margin:0; padding:20px; background:#f9f9f9; }
+    h1, h2, h3 { text-align:center; }
+    .menu, .units, .gallery { display:none; margin-top:30px; }
+    .grid {
+      display:flex; flex-wrap:wrap; gap:15px; justify-content:center;
     }
-    h1 {
-      color: #333;
-      margin-bottom: 20px;
+    .card {
+      background:white; padding:20px; border-radius:8px;
+      box-shadow:0 2px 5px rgba(0,0,0,0.2); cursor:pointer;
+      transition:0.2s;
     }
-    .buttons {
-      margin-bottom: 20px;
-    }
-    .buttons button {
-      margin: 5px;
-      padding: 10px 15px;
-      border: none;
-      background: #4CAF50;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .buttons button:hover {
-      background: #45a049;
-    }
-    .gallery {
-      display: none;
-      margin-top: 20px;
-    }
-    .unit {
-      margin: 15px auto;
-      padding: 15px;
-      max-width: 700px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .unit h3 {
-      margin-bottom: 10px;
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      max-width: 600px;
-      margin: auto;
-      overflow: hidden;
-      border-radius: 10px;
-    }
-    .slides {
-      display: flex;
-      transition: transform 0.5s ease-in-out;
-    }
-    .slides img {
-      width: 100%;
-      border-radius: 10px;
-    }
-    .nav {
-      position: absolute;
-      top: 50%;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      transform: translateY(-50%);
-    }
-    .nav button {
-      background: rgba(0,0,0,0.5);
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      border-radius: 50%;
+    .card:hover { transform:scale(1.05); background:#f0f0f0; }
+    .back { margin:20px auto; display:block; text-align:center; cursor:pointer; color:blue; }
+    .gallery img {
+      width:300px; height:auto; border-radius:8px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
+
   <h1>The Edge Apartemen Kamarku</h1>
 
-  <!-- Tombol Navigasi -->
-  <div class="buttons">
-    <button onclick="showGallery('type22')">Type 22 Studio</button>
-    <button onclick="showGallery('type25')">Type 25</button>
-    <button onclick="showGallery('type36st')">Type 36 Studio</button>
-    <button onclick="showGallery('type36br1')">Type 36 1 Bedroom</button>
-    <button onclick="showGallery('type36br2')">Type 36 2 Bedroom</button>
-    <button onclick="showGallery('type47')">Type 47 2BR</button>
-    <button onclick="showGallery('type72')">Type 72 3BR</button>
-  </div>
-
-  <!-- Type 22 -->
-  <div id="type22" class="gallery">
-    <div class="unit">
-      <h3>Type 22 Studio</h3>
-      <div class="slider" id="slider-22">
-        <div class="slides">
-          <img src="https://via.placeholder.com/600x400" alt="Foto 1"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 2"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 3"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 4"/>
-        </div>
-        <div class="nav">
-          <button onclick="prevSlide('slider-22')">&#10094;</button>
-          <button onclick="nextSlide('slider-22')">&#10095;</button>
-        </div>
-      </div>
+  <!-- Halaman 1: Pilih Tipe -->
+  <div id="menu" class="menu" style="display:block;">
+    <h2>Pilih Tipe Kamar</h2>
+    <div class="grid">
+      <div class="card" onclick="showUnits('22')">Type 22 Studio</div>
+      <div class="card" onclick="showUnits('25')">Type 25</div>
+      <div class="card" onclick="showUnits('36st')">Type 36 Studio</div>
+      <div class="card" onclick="showUnits('36-1br')">Type 36 1 Bedroom</div>
+      <div class="card" onclick="showUnits('36-2br')">Type 36 2 Bedroom</div>
+      <div class="card" onclick="showUnits('47-2br')">Type 47 2 Bedroom</div>
+      <div class="card" onclick="showUnits('72-3br')">Type 72 3 Bedroom</div>
     </div>
   </div>
 
-  <!-- Type 25 -->
-  <div id="type25" class="gallery">
-    <div class="unit">
-      <h3>Type 25</h3>
-      <div class="slider" id="slider-25">
-        <div class="slides">
-          <img src="https://via.placeholder.com/600x400" alt="Foto 1"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 2"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 3"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 4"/>
-        </div>
-        <div class="nav">
-          <button onclick="prevSlide('slider-25')">&#10094;</button>
-          <button onclick="nextSlide('slider-25')">&#10095;</button>
-        </div>
-      </div>
-    </div>
+  <!-- Halaman 2: Nomor Unit -->
+  <div id="units" class="units">
+    <h2 id="unitTitle"></h2>
+    <div class="grid" id="unitList"></div>
+    <span class="back" onclick="backToMenu()">⬅ Kembali</span>
   </div>
 
-  <!-- Type 36 Studio -->
-  <div id="type36st" class="gallery">
-    <div class="unit">
-      <h3>Type 36 Studio</h3>
-      <div class="slider" id="slider-36st">
-        <div class="slides">
-          <img src="https://via.placeholder.com/600x400" alt="Foto 1"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 2"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 3"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 4"/>
-        </div>
-        <div class="nav">
-          <button onclick="prevSlide('slider-36st')">&#10094;</button>
-          <button onclick="nextSlide('slider-36st')">&#10095;</button>
-        </div>
-      </div>
-    </div>
+  <!-- Halaman 3: Galeri Foto -->
+  <div id="gallery" class="gallery">
+    <h3 id="galleryTitle"></h3>
+    <div class="grid" id="galleryPhotos"></div>
+    <span class="back" onclick="backToUnits()">⬅ Kembali ke daftar unit</span>
   </div>
 
-  <!-- Type 36 1BR -->
-  <div id="type36br1" class="gallery">
-    <div class="unit">
-      <h3>Type 36 - 1 Bedroom</h3>
-      <div class="slider" id="slider-36br1">
-        <div class="slides">
-          <img src="https://via.placeholder.com/600x400" alt="Foto 1"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 2"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 3"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 4"/>
-        </div>
-        <div class="nav">
-          <button onclick="prevSlide('slider-36br1')">&#10094;</button>
-          <button onclick="nextSlide('slider-36br1')">&#10095;</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Type 36 2BR -->
-  <div id="type36br2" class="gallery">
-    <div class="unit">
-      <h3>Type 36 - 2 Bedroom</h3>
-      <div class="slider" id="slider-36br2">
-        <div class="slides">
-          <img src="https://via.placeholder.com/600x400" alt="Foto 1"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 2"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 3"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 4"/>
-        </div>
-        <div class="nav">
-          <button onclick="prevSlide('slider-36br2')">&#10094;</button>
-          <button onclick="nextSlide('slider-36br2')">&#10095;</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Type 47 2BR -->
-  <div id="type47" class="gallery">
-    <div class="unit">
-      <h3>Type 47 - 2 Bedroom</h3>
-      <div class="slider" id="slider-47">
-        <div class="slides">
-          <img src="https://via.placeholder.com/600x400" alt="Foto 1"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 2"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 3"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 4"/>
-        </div>
-        <div class="nav">
-          <button onclick="prevSlide('slider-47')">&#10094;</button>
-          <button onclick="nextSlide('slider-47')">&#10095;</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Type 72 3BR -->
-  <div id="type72" class="gallery">
-    <div class="unit">
-      <h3>Type 72 - 3 Bedroom</h3>
-      <div class="slider" id="slider-72">
-        <div class="slides">
-          <img src="https://via.placeholder.com/600x400" alt="Foto 1"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 2"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 3"/>
-          <img src="https://via.placeholder.com/600x400" alt="Foto 4"/>
-        </div>
-        <div class="nav">
-          <button onclick="prevSlide('slider-72')">&#10094;</button>
-          <button onclick="nextSlide('slider-72')">&#10095;</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCRIPT -->
   <script>
-    function showGallery(id) {
-      document.querySelectorAll('.gallery').forEach(g => g.style.display = 'none');
-      document.getElementById(id).style.display = 'block';
+    // Data struktur tipe → unit → foto
+    const data = {
+      "22": {
+        title: "Type 22 Studio",
+        units: {
+          "1728": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
+          "1723": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
+          "1528": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
+          "1523": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
+          "723": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
+          "623": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"],
+          "528": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"]
+        }
+      },
+      "25": {
+        title: "Type 25",
+        units: {
+          "1520": ["https://via.placeholder.com/600x400","https://via.placeholder.com/600x400"]
+        }
+      },
+      "36st": {
+        title: "Type 36 Studio",
+        units: {
+          "1929": ["https://via.placeholder.com/600x400"],
+          "1910": ["https://via.placeholder.com/600x400"],
+          "1903": ["https://via.placeholder.com/600x400"],
+          "1735": ["https://via.placeholder.com/600x400"],
+          "935": ["https://via.placeholder.com/600x400"]
+        }
+      },
+      "36-1br": {
+        title: "Type 36 1 Bedroom",
+        units: {
+          "1939": ["https://via.placeholder.com/600x400"],
+          "1856": ["https://via.placeholder.com/600x400"],
+          "1832": ["https://via.placeholder.com/600x400"],
+          "1811": ["https://via.placeholder.com/600x400"],
+          "1809": ["https://via.placeholder.com/600x400"],
+          "1256": ["https://via.placeholder.com/600x400"],
+          "1110": ["https://via.placeholder.com/600x400"],
+          "1108": ["https://via.placeholder.com/600x400"],
+          "952": ["https://via.placeholder.com/600x400"],
+          "851": ["https://via.placeholder.com/600x400"],
+          "817": ["https://via.placeholder.com/600x400"],
+          "533": ["https://via.placeholder.com/600x400"]
+        }
+      },
+      "36-2br": {
+        title: "Type 36 2 Bedroom",
+        units: {
+          "1908": ["https://via.placeholder.com/600x400"],
+          "1733": ["https://via.placeholder.com/600x400"],
+          "1606": ["https://via.placeholder.com/600x400"],
+          "1508": ["https://via.placeholder.com/600x400"],
+          "1250": ["https://via.placeholder.com/600x400"],
+          "1219": ["https://via.placeholder.com/600x400"],
+          "905": ["https://via.placeholder.com/600x400"],
+          "339": ["https://via.placeholder.com/600x400"]
+        }
+      },
+      "47-2br": {
+        title: "Type 47 2 Bedroom",
+        units: {
+          "1222": ["https://via.placeholder.com/600x400"]
+        }
+      },
+      "72-3br": {
+        title: "Type 72 3 Bedroom",
+        units: {
+          "2028": ["https://via.placeholder.com/600x400"]
+        }
+      }
+    };
+
+    // Navigasi antar halaman
+    function showUnits(type) {
+      document.getElementById("menu").style.display="none";
+      document.getElementById("gallery").style.display="none";
+      document.getElementById("units").style.display="block";
+      document.getElementById("unitTitle").innerText = data[type].title;
+      let html = "";
+      for (let unit in data[type].units) {
+        html += `<div class="card" onclick="showGallery('${type}','${unit}')">Unit ${unit}</div>`;
+      }
+      document.getElementById("unitList").innerHTML = html;
     }
 
-    var slideIndex = {};
-    function initSlider(sliderId) {
-      slideIndex[sliderId] = 0;
-      showSlides(sliderId, 0);
-    }
-    function showSlides(sliderId, n) {
-      var slider = document.getElementById(sliderId);
-      var slides = slider.querySelector('.slides');
-      var total = slides.children.length;
-      if (n >= total) n = 0;
-      if (n < 0) n = total - 1;
-      slideIndex[sliderId] = n;
-      slides.style.transform = 'translateX(-' + (n * 100) + '%)';
-    }
-    function nextSlide(sliderId) {
-      showSlides(sliderId, slideIndex[sliderId] + 1);
-    }
-    function prevSlide(sliderId) {
-      showSlides(sliderId, slideIndex[sliderId] - 1);
+    function backToMenu(){
+      document.getElementById("units").style.display="none";
+      document.getElementById("menu").style.display="block";
     }
 
-    window.onload = function() {
-      initSlider('slider-22');
-      initSlider('slider-25');
-      initSlider('slider-36st');
-      initSlider('slider-36br1');
-      initSlider('slider-36br2');
-      initSlider('slider-47');
-      initSlider('slider-72');
+    function showGallery(type,unit){
+      document.getElementById("units").style.display="none";
+      document.getElementById("gallery").style.display="block";
+      document.getElementById("galleryTitle").innerText = data[type].title + " - Unit " + unit;
+      let html="";
+      data[type].units[unit].forEach(foto=>{
+        html += `<img src="${foto}" alt="Foto Unit ${unit}"/>`;
+      });
+      document.getElementById("galleryPhotos").innerHTML = html;
+    }
+
+    function backToUnits(){
+      document.getElementById("gallery").style.display="none";
+      document.getElementById("units").style.display="block";
     }
   </script>
 </body>
