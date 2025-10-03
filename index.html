@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Edge Apartemen Kamarku</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .buttons {
+      margin-bottom: 20px;
+    }
+    .buttons button {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .buttons button:hover {
+      background: #45a049;
+    }
+    .gallery {
+      display: none;
+      margin-top: 20px;
+    }
+    .unit {
+      margin: 15px auto;
+      padding: 15px;
+      max-width: 700px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .unit h3 {
+      margin-bottom: 10px;
+    }
+    .slider {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .slides img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .nav {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+    }
+    .nav button {
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+  <h1>The Edge Apartemen Kamarku</h1>
+
+  <div class="buttons">
+    <button onclick="showGallery('type22')">Type 22 Studio</button>
+    <button onclick="showGallery('type25')">Type 25</button>
+    <button onclick="showGallery('type36st')">Type 36 Studio</button>
+    <button onclick="showGallery('type36br1')">Type 36 1 Bedroom</button>
+    <button onclick="showGallery('type36br2')">Type 36 2 Bedroom</button>
+    <button onclick="showGallery('type47')">Type 47 2BR</button>
+    <button onclick="showGallery('type72')">Type 72 3BR</button>
+  </div>
+
+  <!-- Contoh Galeri -->
+  <div id="type22" class="gallery">
+    <div class="unit">
+      <h3>Unit 1728</h3>
+      <div class="slider" id="slider-1728">
+        <div class="slides">
+          <img src="https://via.placeholder.com/600x400" alt="Foto 1"/>
+          <img src="https://via.placeholder.com/600x400" alt="Foto 2"/>
+          <img src="https://via.placeholder.com/600x400" alt="Foto 3"/>
+          <img src="https://via.placeholder.com/600x400" alt="Foto 4"/>
+        </div>
+        <div class="nav">
+          <button onclick="prevSlide('slider-1728')">&#10094;</button>
+          <button onclick="nextSlide('slider-1728')">&#10095;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tambahkan galeri lain sesuai kebutuhan (tinggal copy blok di atas) -->
+
+  <script>
+    function showGallery(id) {
+      document.querySelectorAll('.gallery').forEach(g => g.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
+    var slideIndex = {};
+    function initSlider(sliderId) {
+      slideIndex[sliderId] = 0;
+      showSlides(sliderId, 0);
+    }
+    function showSlides(sliderId, n) {
+      var slider = document.getElementById(sliderId);
+      var slides = slider.querySelector('.slides');
+      var total = slides.children.length;
+      if (n >= total) n = 0;
+      if (n < 0) n = total - 1;
+      slideIndex[sliderId] = n;
+      slides.style.transform = 'translateX(-' + (n * 100) + '%)';
+    }
+    function nextSlide(sliderId) {
+      showSlides(sliderId, slideIndex[sliderId] + 1);
+    }
+    function prevSlide(sliderId) {
+      showSlides(sliderId, slideIndex[sliderId] - 1);
+    }
+
+    window.onload = function() {
+      initSlider('slider-1728');
+    }
+  </script>
+</body>
+</html>
