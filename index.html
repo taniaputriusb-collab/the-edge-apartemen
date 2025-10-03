@@ -4,11 +4,21 @@
   <meta charset="UTF-8">
   <title>The Edge Apartemen Kamarku</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; }
+    body { font-family: Arial, sans-serif; text-align: center; background:#f9f9f9; margin:0; padding:20px; }
+    h1 { color:#333; }
+    h2 { color:#444; margin-top:20px; }
     .hidden { display: none; }
-    .btn { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .btn {
+      padding: 10px 20px; margin: 5px;
+      background: #007bff; color: white;
+      border: none; border-radius: 5px;
+      cursor: pointer; font-size:16px;
+    }
     .btn:hover { background: #0056b3; }
-    .gallery img { max-width: 200px; margin: 5px; border-radius: 10px; }
+    .gallery img {
+      max-width: 200px; margin: 8px;
+      border-radius: 8px; box-shadow:0 2px 6px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -28,6 +38,7 @@
   <div id="page2" class="hidden">
     <h2 id="unitType"></h2>
     <div id="unitList"></div>
+    <br>
     <button class="btn" onclick="backToPage1()">← Kembali</button>
   </div>
 
@@ -35,25 +46,27 @@
   <div id="page3" class="hidden">
     <h2 id="unitTitle"></h2>
     <div id="gallery" class="gallery"></div>
+    <br>
     <button class="btn" onclick="downloadAll()">⬇ Download Semua Foto</button>
     <br><br>
     <button class="btn" onclick="backToPage2()">← Kembali</button>
   </div>
 
+  <!-- JSZIP for download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
   <script>
-    // Data unit + link foto (EDIT DI SINI)
+    // ==================== DATA UNIT (EDIT INI SAJA) ====================
     const data = {
       "22 Studio": {
-        "1728": ["528-1.jpg","528-2.jpg"],
+        "1728": ["1728-1.jpg","1728-2.jpg"],
         "1723": ["1723-1.jpg","1723-2.jpg"],
         "1528": ["1528-1.jpg","1528-2.jpg"],
         "1523": ["1523-1.jpg","1523-2.jpg"],
-        "723":  ["723-1.jpg","723-2.jpg"],
-        "623":  ["623-1.jpg","623-2.jpg"],
-        "528":  ["528-1.jpg","528-2.jpg","528-3.jpg,"528-4.jpg","528-5.jpg"]
+        "723":  ["723-1.jpg","723-2.jpg","723-3.jpg","723-4.jpg"],
+        "623":  ["623-1.jpg","623-2.jpg","623-3.jpg","623-4.jpg"],
+        "528":  ["528-1.jpg","528-2.jpg","528-3.jpg","528-4.jpg","528-5.jpg"]
       },
       "25": {
         "1520": ["1520-1.jpg","1520-2.jpg"]
@@ -93,6 +106,7 @@
         "3BR2028": ["3BR2028-1.jpg"]
       }
     };
+    // ==================================================================
 
     let currentType = "";
     let currentUnit = "";
@@ -153,4 +167,3 @@
   </script>
 </body>
 </html>
-
